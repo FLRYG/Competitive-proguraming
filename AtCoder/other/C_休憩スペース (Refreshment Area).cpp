@@ -37,13 +37,13 @@ int main(){
     rep(i,N) cin>>S[i];
 
     int ans=0;
-    rep(i,N-D+1) rep(j,M-D+1){
+    rep(i,N) rep(j,M){
         bool flag;
         flag=true;
-        rep(k,D) if(S[i+k][j]=='#') flag=false;
+        rep(k,D) if(N<=i+k || M<=j || S[i+k][j]=='#') flag=false;
         if(flag) ans++;
         flag=true;
-        rep(k,D) if(S[i][j+k]=='#') flag=false;
+        rep(k,D) if(N<=i || M<=j+k || S[i][j+k]=='#') flag=false;
         if(flag) ans++;
     }
 
