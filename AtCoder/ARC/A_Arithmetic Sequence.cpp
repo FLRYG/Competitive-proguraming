@@ -29,21 +29,22 @@ int const INF=1001001001;
 ll const LINF=1001001001001001001;
 ll const MOD=1000000007;
 
-ll N,K;
-ll X[15];
-ll Y[15];
+ll A[3];
 
 int main(){
-    cin>>N>>K;
-    rep(i,N) cin>>X[i]>>Y[i];
+    rep(i,3) cin>>A[i];
 
-    vector<vector<ll>> dp(1<<N,vector<ll>(K+1,0));
-    repn(i,(1<<N)-1){
-        int j=i;
-        while(j!=0){
-            rep(k,K+1)
-        }
+    ll b=A[1]-A[0];
+    ll c=A[2]-A[1];
+    ll ans;
+    if(b<=c){
+        ans=(c-b+1)/2;
+        if((b&1)!=(c&1)) ans++;
+    }else{
+        ans=b-c;
     }
+
+    cout<<ans<<endl;
     
     return 0;
 }
