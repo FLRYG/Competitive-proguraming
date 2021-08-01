@@ -29,28 +29,27 @@ int const INF=1001001001;
 ll const LINF=1001001001001001001;
 ll const MOD=1000000007;
 
-ll H,W,C;
-ll A[1002][1002];
+string X;
 
 int main(){
-    cin>>H>>W>>C;
-    vector<vector<ll>> A(H+2,vector<ll>(W+2,LINF));
-    repn(i,H) repn(j,W) cin>>A[i][j];
+    cin>>X;
 
-    ll ans=LINF;
-    vector<vector<ll>> dp(H+1,vector<ll>(W+2,LINF));
-    repn(i,H) repn(j,W){
-        ll res=C*(i+j)+A[i][j]+min(dp[i-1][j],dp[i][j-1]);
-        ans=min(ans,res);
-        dp[i][j]=min(-C*(i+j)+A[i][j],min(dp[i-1][j],dp[i][j-1]));
+    string ans="Strong";
+
+    bool flag=1;
+    rep(i,3) flag&=X[i]==X[i+1];
+    if(flag) ans="Weak";
+
+    flag=1;
+    rep(i,3){
+        int a=X[i]-'0';
+        int b=X[i+1]-'0';
+        if(a<=8 && a+1==b) flag&=1;
+        else if(a==9 && b==0) flag&=1;
+        else flag=0;
     }
+    if(flag) ans="Weak";
 
-    repn(i,H) repn(j,W){
-        ll res=C*(i+j)+A[i][W-j+1]+min(dp[i-1][W-j+1],dp[i][W-j+1+1]);
-        ans=min(ans,res);
-        dp[i][W-j+1]=min(-C*(i+j)+A[i][W-j+1],min(dp[i-1][W-j+1],dp[i][W-j+1+1]));
-    } 
-    
     cout<<ans<<endl;
     
     return 0;

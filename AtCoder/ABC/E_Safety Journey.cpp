@@ -29,29 +29,40 @@ int const INF=1001001001;
 ll const LINF=1001001001001001001;
 ll const MOD=1000000007;
 
-ll H,W,C;
-ll A[1002][1002];
+ll mpow(ll x,ll n){
+    if(n==0) return 1;
+    else if(n%2) return x*mpow(x,n-1)%MOD;
+    return mpow(x*x%MOD,n/2)%MOD;
+}
+
+ll N,M,K;
 
 int main(){
-    cin>>H>>W>>C;
-    vector<vector<ll>> A(H+2,vector<ll>(W+2,LINF));
-    repn(i,H) repn(j,W) cin>>A[i][j];
+    cin>>N>>M>>K;
+    vector<vector<ll>> G(N);
+    rep(i,M){
+        ll u,v;
+        cin>>u>>v;
+        u--, v--;
+        G[u].push_back(v);
+        G[v].push_back(u);
+    }
+    rep(i,N) G[i].push_back(i);
+    rep(i,N) sort(G[i].begin(),G[i].end());
 
-    ll ans=LINF;
-    vector<vector<ll>> dp(H+1,vector<ll>(W+2,LINF));
-    repn(i,H) repn(j,W){
-        ll res=C*(i+j)+A[i][j]+min(dp[i-1][j],dp[i][j-1]);
-        ans=min(ans,res);
-        dp[i][j]=min(-C*(i+j)+A[i][j],min(dp[i-1][j],dp[i][j-1]));
+    vector<ll> cnt(N,0);
+    repr(e,G[0]) cnt[e]=1;
+    rep(i,K-1){
+        rep(j,N) repr(e,G[j]){
+            cnt[e]+=cnt[j];
+            cnt[e]%=MOD;
+        }
     }
 
-    repn(i,H) repn(j,W){
-        ll res=C*(i+j)+A[i][W-j+1]+min(dp[i-1][W-j+1],dp[i][W-j+1+1]);
-        ans=min(ans,res);
-        dp[i][W-j+1]=min(-C*(i+j)+A[i][W-j+1],min(dp[i-1][W-j+1],dp[i][W-j+1+1]));
-    } 
-    
-    cout<<ans<<endl;
+    ll ans=mpow(2,MOD)*K%MOD*(K-1)%MOD*(N-1)%MOD;
+    ans-=cnt[0];
+
+    cout<<
     
     return 0;
 }

@@ -29,28 +29,25 @@ int const INF=1001001001;
 ll const LINF=1001001001001001001;
 ll const MOD=1000000007;
 
-ll H,W,C;
-ll A[1002][1002];
+int N,M;
+int A[200000];
+int B[200000];
 
 int main(){
-    cin>>H>>W>>C;
-    vector<vector<ll>> A(H+2,vector<ll>(W+2,LINF));
-    repn(i,H) repn(j,W) cin>>A[i][j];
+    cin>>N>>M;
+    rep(i,N) cin>>A[i];
+    rep(i,M) cin>>B[i];
 
-    ll ans=LINF;
-    vector<vector<ll>> dp(H+1,vector<ll>(W+2,LINF));
-    repn(i,H) repn(j,W){
-        ll res=C*(i+j)+A[i][j]+min(dp[i-1][j],dp[i][j-1]);
-        ans=min(ans,res);
-        dp[i][j]=min(-C*(i+j)+A[i][j],min(dp[i-1][j],dp[i][j-1]));
+    sort(A,A+N);
+    sort(B,B+M);
+
+    int ans=INF;
+    rep(i,N){
+        int *p=lower_bound(B,B+M,A[i]);
+        if(p!=B+M) ans=min(ans,abs(A[i]-*p));
+        if(p!=B) ans=min(ans,abs(A[i]-*(p-1)));
     }
 
-    repn(i,H) repn(j,W){
-        ll res=C*(i+j)+A[i][W-j+1]+min(dp[i-1][W-j+1],dp[i][W-j+1+1]);
-        ans=min(ans,res);
-        dp[i][W-j+1]=min(-C*(i+j)+A[i][W-j+1],min(dp[i-1][W-j+1],dp[i][W-j+1+1]));
-    } 
-    
     cout<<ans<<endl;
     
     return 0;

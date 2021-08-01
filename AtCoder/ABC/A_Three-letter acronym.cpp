@@ -29,29 +29,15 @@ int const INF=1001001001;
 ll const LINF=1001001001001001001;
 ll const MOD=1000000007;
 
-ll H,W,C;
-ll A[1002][1002];
+string s[3];
 
 int main(){
-    cin>>H>>W>>C;
-    vector<vector<ll>> A(H+2,vector<ll>(W+2,LINF));
-    repn(i,H) repn(j,W) cin>>A[i][j];
+    rep(i,3) cin>>s[i];
 
-    ll ans=LINF;
-    vector<vector<ll>> dp(H+1,vector<ll>(W+2,LINF));
-    repn(i,H) repn(j,W){
-        ll res=C*(i+j)+A[i][j]+min(dp[i-1][j],dp[i][j-1]);
-        ans=min(ans,res);
-        dp[i][j]=min(-C*(i+j)+A[i][j],min(dp[i-1][j],dp[i][j-1]));
+    rep(i,3){
+        cout<<char(s[i][0]-'a'+'A');
     }
-
-    repn(i,H) repn(j,W){
-        ll res=C*(i+j)+A[i][W-j+1]+min(dp[i-1][W-j+1],dp[i][W-j+1+1]);
-        ans=min(ans,res);
-        dp[i][W-j+1]=min(-C*(i+j)+A[i][W-j+1],min(dp[i-1][W-j+1],dp[i][W-j+1+1]));
-    } 
-    
-    cout<<ans<<endl;
+    cout<<endl;
     
     return 0;
 }
