@@ -78,6 +78,7 @@
     E - Max GCD                         考察  速
     D - Shortest Path Queries 2         ワーシャルフロイド法
     D - National Railway                式変形 -> dp
+    E - Safety Journey                  dp
 
 
 <<ARC>>
