@@ -76,9 +76,10 @@
     D - 塗り絵                          dp
     D - Various Sushi                   考察　速
     E - Max GCD                         考察  速
-    D - Shortest Path Queries 2         ワーシャルフロイド法
+    D - Shortest Path Queries 2         ワーシャルフロイド法 典型
     D - National Railway                式変形 -> dp
     E - Safety Journey                  dp
+    D - 禁止された数字                   桁dp   典型    ***
 
 
 <<ARC>>
@@ -210,6 +211,8 @@ segment tree 大全 (平方分割も可)
     E - Knapsack 2                      ナップザック問題
     F - LCS                             最長共通部分列問題
     E - Logs                            二分探索
+    D - Shortest Path Queries 2         ワーシャルフロイド法
+    D - 禁止された数字                   桁dp
 
 
 <<再1>>
