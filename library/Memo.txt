@@ -213,6 +213,7 @@ segment tree 大全 (平方分割も可)
     E - Logs                            二分探索
     D - Shortest Path Queries 2         ワーシャルフロイド法
     D - 禁止された数字                   桁dp
+    E - 数                              桁dp
 
 
 <<再1>>
