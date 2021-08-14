@@ -30,28 +30,44 @@ ll const LINF=1001001001001001001;
 ll const MOD=1000000007;
 
 ll N,D;
-ll dp[201][101][101];
-ll tmp[201][101][101];
+double dp[201][101][101];
+double tmp[201][101][101];
 
 int main(){
     cin>>N>>D;
 
+    int a=0, b=0, c=0;
+    while(D%2==0) a++, D/=2;
+    while(D%3==0) b++, D/=3;
+    while(D%5==0) c++, D/=5;
+
+    if(D>1){
+        cout<<0<<endl;
+        return 0;
+    }
+
     dp[0][0][0]=1;
     rep(n,N){
-        rep(i,100) rep(j,100) rep(k,100){
-            tmp[i][j][k]+=dp[i][j][k];
-            tmp[i+1][j][k]+=dp[i][j][k];
-            tmp[i][j+1][k]+=dp[i][j][k];
-            tmp[i+2][j][k]+=dp[i][j][k];
-            tmp[i][j][k+1]+=dp[i][j][k];
-            tmp[i+1][j+1][k]+=dp[i][j][k];
+        rep(i,2*n) rep(j,n) rep(k,n){
+            tmp[i][j][k]+=dp[i][j][k]/6;
+            tmp[i+1][j][k]+=dp[i][j][k]/6;
+            tmp[i][j+1][k]+=dp[i][j][k]/6;
+            tmp[i+2][j][k]+=dp[i][j][k]/6;
+            tmp[i][j][k+1]+=dp[i][j][k]/6;
+            tmp[i+1][j+1][k]+=dp[i][j][k]/6;
         }
-        rep(i,100) rep(j,100) rep(k,100){
+        rep(i,2*n) rep(j,n) rep(k,n){
             dp[i][j][k]=tmp[i][j][k];
         }
     }
 
-    
+    double ans=0;
+    for(;a<=200;a++) for(;b<=100;b++) for(;c<=100;c++){
+        ans+=dp[a][b][c];
+    }
+    rep(i,N) ans/=6.0;
+
+    cout<<ans<<endl;
     
     return 0;
 }

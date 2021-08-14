@@ -79,7 +79,7 @@ struct Timer{
     }
 };
 
-const bool LOCALTEST=false;
+const bool LOCALTEST=true;
 const double E=2.718281828459045;
 const double TIME_LIMIT=2.9;
 const double TEMPERATURE0=1e3;
@@ -110,7 +110,7 @@ int const J[]={0,1,0,-1};
 char const DIR[]={'D','R','U','L'};
 
 int N, si, sj;
-char c[70][70];
+char c[71][71];
 
 void read(){
     cin>>N>>si>>sj;
