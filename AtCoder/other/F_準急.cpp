@@ -19,10 +19,11 @@
 #define rep(i, n) for (int i = 0; i < n; i++)
 #define repn(i, n) for (int i = 1; i <= n; i++)
 #define repr(e, x) for (auto& e : x)
+#define all(x) (x).begin(), (x).end()
 using namespace std;
 typedef long long ll;
 typedef long double ld;
-// typedef pair<int,int> P;
+// typedef pair<ll, ll> P;
 // typedef pair<int,P> IP;
 // typedef pair<P,P> PP;
 double const PI = 3.141592653589793;
@@ -30,28 +31,32 @@ int const INF = 1001001001;
 ll const LINF = 1001001001001001001;
 ll const MOD = 1000000007;
 
-int N, L;
-int a[100000];
+ll N,K;
 
 int main() {
-    cin >> N >> L;
-    rep(i, N) cin >> a[i];
+    cin>>N>>K;
+    
+    vector<ll> dp(N+1), dp2(N+1);
+    dp2[0]=dp2[1]=1;
+    for(int i=2;i<=N-1;i++){
+        dp2[i]=dp2[i-1]*2%MOD;
+    }
+    dp2[N]=dp2[N-1];
 
-    int k = -1;
-    rep(i, N - 1) {
-        if (a[i] + a[i + 1] >= L) {
-            k = i + 1;
+    repn(i,N){
+        if(i>=K){
+            dp[i]=dp[i-1]+dp2[i-K];
+            dp[i]%=MOD;
         }
+        dp2[i]-=dp[i];
+        dp2[i]%=MOD;
     }
-    if (k == -1) {
-        cout << "Impossible" << endl;
-        return 0;
-    }
+    if(dp2[N]<0) dp2[N]+MOD;
 
-    cout << "Possible" << endl;
-    repn(i, k - 1) cout << i << endl;
-    for (int i = N - 1; i >= k + 1; i--) cout << i << endl;
-    cout << k << endl;
+    repn(i,N) cout<<dp[i]<<' '; cout<<endl;
+    repn(i,N) cout<<dp2[i]<<' '; cout<<endl;
 
+    cout<<dp2[N]<<endl;
+    
     return 0;
 }

@@ -19,10 +19,11 @@
 #define rep(i, n) for (int i = 0; i < n; i++)
 #define repn(i, n) for (int i = 1; i <= n; i++)
 #define repr(e, x) for (auto& e : x)
+#define all(x) (x).begin(), (x).end()
 using namespace std;
 typedef long long ll;
 typedef long double ld;
-// typedef pair<int,int> P;
+// typedef pair<ll, ll> P;
 // typedef pair<int,P> IP;
 // typedef pair<P,P> PP;
 double const PI = 3.141592653589793;
@@ -30,28 +31,23 @@ int const INF = 1001001001;
 ll const LINF = 1001001001001001001;
 ll const MOD = 1000000007;
 
-int N, L;
-int a[100000];
+int N;
 
 int main() {
-    cin >> N >> L;
-    rep(i, N) cin >> a[i];
+    cin >> N;
+    vector<int> A(N), id(N), B, C;
+    rep(i, N) cin >> A[i];
 
-    int k = -1;
-    rep(i, N - 1) {
-        if (a[i] + a[i + 1] >= L) {
-            k = i + 1;
-        }
-    }
-    if (k == -1) {
-        cout << "Impossible" << endl;
-        return 0;
+    iota(all(id), 0);
+    sort(all(id), [&](int i, int j) { return A[i] < A[j]; });
+    rep(i, N) A[id[i]] = i;
+
+    int ans = 0;
+    for (int i = 0; i < N; i += 2) {
+        if (A[i] & 1) ans++;
     }
 
-    cout << "Possible" << endl;
-    repn(i, k - 1) cout << i << endl;
-    for (int i = N - 1; i >= k + 1; i--) cout << i << endl;
-    cout << k << endl;
+    cout << ans << endl;
 
     return 0;
 }

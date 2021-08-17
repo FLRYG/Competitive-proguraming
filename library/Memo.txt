@@ -67,20 +67,21 @@
     D - 徒競走                          トポロジカルソートの数え上げ  bitDP  ***
     C - 倍々ゲーム                      場合分け
     E - Sequence Matching               dp 速   *****
-    F - Sugoroku                        セグツリーに頼らないで！　速
+    F - Sugoroku                        セグツリーに頼らないで！ 速
     D - 閉路                            LCA
     D - 連結                            UnionFind, mapによる数え上げ
     D - Happy Birthday! 2               鳩ノ巣原理 *****
     E - Xor Distances                   xor a^a=0
     E - Count Descendants               部分木　行きがけ・帰りがけ
     D - 塗り絵                          dp
-    D - Various Sushi                   考察　速
+    D - Various Sushi                   考察  速
     E - Max GCD                         考察  速
     D - Shortest Path Queries 2         ワーシャルフロイド法 典型
     D - National Railway                式変形 -> dp
     E - Safety Journey                  dp
     D - 禁止された数字                   桁dp   典型    ***
     D - Sum of Maximum Weights          どのデータ構造を使用?
+    E - Packing Under Range Regulations 貪欲  実装  速
 
 
 <<ARC>>
