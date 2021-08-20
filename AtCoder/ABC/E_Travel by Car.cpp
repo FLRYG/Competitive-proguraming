@@ -32,38 +32,41 @@ int const INF = 1001001001;
 ll const LINF = 1001001001001001001;
 ll const MOD = 1000000007;
 
-ll N;
+int N,M,L,Q;
 
 int main() {
-    cin >> N;
+    cin>>N>>M>>L;
 
-    set<ll> s;
-    for (ll i = 1; i <= 1000000; i++) {
-        if (N % i == 0) {
-            s.insert(i);
-            s.insert(N / i);
-        }
+    vector<vector<ll>> G(N,vector<ll>(N,LINF));
+    rep(i,M){
+        int a,b,c;
+        cin>>a>>b>>c;
+        a--, b--;
+        G[a][b]=c;
+        G[b][a]=c;
     }
-    s.erase(1);
-
-    ll ans = 0;
-    repr(e, s) {
-        ll n = N;
-        while (n % e == 0) n /= e;
-        if (n % e == 1) ans++;
+    rep(i,N) G[i][i]=0;
+    rep(k,N) rep(i,N) rep(j,N){
+        G[i][j]=min(G[i][j],G[i][k]+G[k][j]);
     }
 
-    N--;
-    set<ll> s2;
-    for (ll i = 1; i <= 1000000; i++) {
-        if (N % i == 0) {
-            s2.insert(i);
-            s2.insert(N / i);
-        }
+    vector<vector<int>> cost(N,vector<int>(N,INF));
+    rep(i,N) cost[i][i]=0;
+    rep(i,N) rep(j,N){
+        if(G[i][j]<=L) cost[i][j]=1;
     }
-    ans += s2.size() - 1;
+    rep(k,N) rep(i,N) rep(j,N){
+        cost[i][j]=min(cost[i][j],cost[i][k]+cost[k][j]);
+    }
 
-    cout << ans << endl;
-
+    cin>>Q;
+    while(Q--){
+        int s,t;
+        cin>>s>>t;
+        s--, t--;
+        if(cost[s][t]==INF) cout<<-1<<endl;
+        else cout<<cost[s][t]-1<<endl;
+    }
+    
     return 0;
 }

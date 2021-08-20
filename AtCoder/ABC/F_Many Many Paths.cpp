@@ -32,36 +32,44 @@ int const INF = 1001001001;
 ll const LINF = 1001001001001001001;
 ll const MOD = 1000000007;
 
-ll N;
+// 前計算あり
+const int MAX = 2000010;
+ll fac[MAX], finv[MAX], inv[MAX];
+
+// テーブルを作る前処理
+void COMinit() {
+    fac[0] = fac[1] = 1;
+    finv[0] = finv[1] = 1;
+    inv[1] = 1;
+    for (ll i = 2; i < MAX; i++) {
+        fac[i] = fac[i - 1] * i % MOD;
+        inv[i] = MOD - inv[MOD % i] * (MOD / i) % MOD;
+        finv[i] = finv[i - 1] * inv[i] % MOD;
+    }
+}
+
+// 二項係数計算
+ll COM(int n, int k) {
+    if (n < k) return 0;
+    if (n < 0 || k < 0) return 0;
+    return fac[n] * (finv[k] * finv[n - k] % MOD) % MOD;
+}
+
+ll r1, c1, r2, c2;
 
 int main() {
-    cin >> N;
+    cin >> r1 >> c1 >> r2 >> c2;
 
-    set<ll> s;
-    for (ll i = 1; i <= 1000000; i++) {
-        if (N % i == 0) {
-            s.insert(i);
-            s.insert(N / i);
-        }
-    }
-    s.erase(1);
+    COMinit();
 
     ll ans = 0;
-    repr(e, s) {
-        ll n = N;
-        while (n % e == 0) n /= e;
-        if (n % e == 1) ans++;
+    for (ll i = r1 + 1; i <= r2 + 1; i++) {
+        ans += COM(i + c2, i);
+        ans %= MOD;
+        ans -= COM(i + c1 - 1, i);
+        ans %= MOD;
     }
-
-    N--;
-    set<ll> s2;
-    for (ll i = 1; i <= 1000000; i++) {
-        if (N % i == 0) {
-            s2.insert(i);
-            s2.insert(N / i);
-        }
-    }
-    ans += s2.size() - 1;
+    if (ans < 0) ans += MOD;
 
     cout << ans << endl;
 

@@ -82,6 +82,8 @@
     D - 禁止された数字                   桁dp   典型    ***
     D - Sum of Maximum Weights          どのデータ構造を使用?
     E - Packing Under Range Regulations 貪欲  実装  速
+    F - Many Many Path                  考察    
+    E - Travel by Car                   ワーシャルフロイド         
 
 
 <<ARC>>

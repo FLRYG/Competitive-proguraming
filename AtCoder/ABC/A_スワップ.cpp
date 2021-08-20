@@ -32,38 +32,12 @@ int const INF = 1001001001;
 ll const LINF = 1001001001001001001;
 ll const MOD = 1000000007;
 
-ll N;
+int A,B;
 
 int main() {
-    cin >> N;
+    cin>>A>>B;
 
-    set<ll> s;
-    for (ll i = 1; i <= 1000000; i++) {
-        if (N % i == 0) {
-            s.insert(i);
-            s.insert(N / i);
-        }
-    }
-    s.erase(1);
-
-    ll ans = 0;
-    repr(e, s) {
-        ll n = N;
-        while (n % e == 0) n /= e;
-        if (n % e == 1) ans++;
-    }
-
-    N--;
-    set<ll> s2;
-    for (ll i = 1; i <= 1000000; i++) {
-        if (N % i == 0) {
-            s2.insert(i);
-            s2.insert(N / i);
-        }
-    }
-    ans += s2.size() - 1;
-
-    cout << ans << endl;
-
+    cout<<B<<' '<<A<<endl;
+    
     return 0;
 }
