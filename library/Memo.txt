@@ -83,7 +83,8 @@
     D - Sum of Maximum Weights          どのデータ構造を使用?
     E - Packing Under Range Regulations 貪欲  実装  速
     F - Many Many Path                  考察    
-    E - Travel by Car                   ワーシャルフロイド         
+    E - Travel by Car                   ワーシャルフロイド
+    E - Hopscotch Addict                グラフの状態数を3倍にする         
 
 
 <<ARC>>
