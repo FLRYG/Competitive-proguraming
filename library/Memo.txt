@@ -84,7 +84,8 @@
     E - Packing Under Range Regulations 貪欲  実装  速
     F - Many Many Path                  考察    
     E - Travel by Car                   ワーシャルフロイド
-    E - Hopscotch Addict                グラフの状態数を3倍にする         
+    E - Hopscotch Addict                グラフの状態数を3倍にする       
+    E - Rem of Sum is Num               式変形 累積和  
 
 
 <<ARC>>
@@ -104,6 +105,7 @@
     C - Tricolor Pyramid                mod 3  ***
     C - データ構造                      segmentTreeによる判定問題への帰着 *****  (or 平方分割   )
     C - 最高のトッピングにしような       dp 
+    B - Squares                         数学
 
 <<AGC>>
     A - Diverse Word                    辞書順

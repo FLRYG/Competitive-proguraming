@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <vector>
 #define rep(i, n) for (int i = 0; i < n; i++)
-#define repn(i, n) for (ll i = 1; i <= n; i++)
+#define repn(i, n) for (int i = 1; i <= n; i++)
 #define repr(e, x) for (auto& e : x)
 #define all(x) (x).begin(), (x).end()
 using namespace std;
@@ -30,26 +30,27 @@ typedef long double ld;
 double const PI = 3.141592653589793;
 int const INF = 1001001001;
 ll const LINF = 1001001001001001001;
-ll const MOD = 998244353;
+ll const MOD = 1000000007;
 
-ll N;
+ll N,K;
+ll A[200000];
 
 int main() {
-    cin>>N;
+    cin>>N>>K;
+    rep(i,N) cin>>A[i];
 
-    ll root=0;
-    while(root*root<=N) root++;
-    root--;
+    vector<ll> sum(N+1,0);
+    repn(i,N){
+        sum[i]=sum[i-1]+A[i-1]-1;
+        sum[i]%=K;
+    }
 
     ll ans=0;
-    repn(b,root) {
-        if(b&1){
-            ans+=(N/b+1)/2-b/2;
-            ans%=MOD;
-        }else{
-            ans+=N/b/2-(b-1)/2;
-            ans%=MOD;
-        }
+    map<ll,ll> cnt;
+    rep(i,N+1){
+        ans+=cnt[sum[i]];
+        cnt[sum[i]]++;
+        if(i-K+1>=0) cnt[sum[i-K+1]]--;
     }
 
     cout<<ans<<endl;
