@@ -33,29 +33,29 @@ ll const LINF = 1001001001001001001;
 ll const MOD = 1000000007;
 
 int H, W;
-int A[81][81];
-int B[81][81];
-bool dp[82][82][81];
+int A[80][80];
+int B[80][80];
+bitset<160 * 80 * 2> dp[80][80];
 
 int main() {
     cin >> H >> W;
-    repn(i, H) repn(j, W) cin >> A[i][j];
-    repn(i, H) repn(j, W) cin >> B[i][j];
+    rep(i, H) rep(j, W) cin >> A[i][j];
+    rep(i, H) rep(j, W) cin >> B[i][j];
 
     vector<vector<int>> C(H + 1, vector<int>(W + 1));
-    repn(i, H) repn(j, W) C[i][j] = abs(A[i][j] - B[i][j]);
+    rep(i, H) rep(j, W) C[i][j] = abs(A[i][j] - B[i][j]);
 
-    dp[1][0][0] = 1;
-    repn(i, H) repn(j, W) {
-        rep(k, 81) {
-            if (dp[i - 1][j][k]) {
-                if (C[i][j] + k <= 80) dp[i][j][C[i][j] + k] = 1;
-                dp[i][j][abs(C[i][j] - k)] = 1;
-            }
-            if (dp[i][j - 1][k]) {
-                if (C[i][j] + k <= 80) dp[i][j][C[i][j] + k] = 1;
-                dp[i][j][abs(C[i][j] - k)] = 1;
-            }
+    int D = 159 * 80;
+    dp[0][0][D - C[0][0]] = 1;
+    dp[0][0][D + C[0][0]] = 1;
+    rep(i, H) rep(j, W) {
+        if (i) {
+            dp[i][j] |= dp[i - 1][j] << C[i][j];
+            dp[i][j] |= dp[i - 1][j] >> C[i][j];
+        }
+        if (j) {
+            dp[i][j] |= dp[i][j - 1] << C[i][j];
+            dp[i][j] |= dp[i][j - 1] >> C[i][j];
         }
         // cout<<i<<','<<j<<": ";
         // repr(e,s) cout<<e<<' ';
