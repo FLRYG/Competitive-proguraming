@@ -57,16 +57,13 @@ int main() {
             dp[i][j] |= dp[i][j - 1] << C[i][j];
             dp[i][j] |= dp[i][j - 1] >> C[i][j];
         }
-        // cout<<i<<','<<j<<": ";
-        // repr(e,s) cout<<e<<' ';
-        // cout<<endl;
     }
 
-    int ans;
-    rep(k, 81) if (dp[H][W][k]) {
-        ans = k;
-        break;
+    int ans=INF;
+    rep(k,2*D+1){
+        if(abs(dp[H-1][W-1][k])) ans=min(ans,abs(k-D));
     }
+    
     cout << ans << endl;
 
     return 0;

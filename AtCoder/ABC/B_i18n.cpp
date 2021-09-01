@@ -24,44 +24,23 @@
 using namespace std;
 typedef long long ll;
 typedef long double ld;
-typedef pair<int, int> P;
+// typedef pair<int, int> P;
 // typedef pair<int,P> IP;
 // typedef pair<P,P> PP;
 double const PI = 3.141592653589793;
 int const INF = 1001001001;
 ll const LINF = 1001001001001001001;
-ll const MOD = 998244353;
+ll const MOD = 1000000007;
 
-ll N;
-P AB[5001];
+string s;
 
 int main() {
-    cin>>N;
-    repn(i,N) cin>>AB[i].first;
-    repn(i,N) cin>>AB[i].second;
+    cin>>s;
 
-    sort(AB+1,AB+N+1);
-
-    ll ans=0;
-    vector<vector<int>> dp(N+1,vector<int>(5000+1,0));
-    vector<vector<int>> dp2(N+1,vector<int>(5000+1,0));
-    rep(j,5000)
-    dp[0][0]=1;
-    repn(i,N){
-        rep(j,5001){
-            dp[i][j]=dp[i-1][j];
-            if(j-AB[i].second>=0){
-                dp[i][j]+=dp[i-1][j-AB[i].second];
-                dp2[i][j]+=dp[i-1][j-AB[i].second];
-                dp[i][j]%=MOD;
-                dp2[i][j]%=MOD;
-            }
-        }
-        repn(j,AB[i].first){
-            ans+=dp2[i][j];
-            ans%=MOD;
-        }
-    }
+    string ans;
+    ans+=s[0];
+    ans+=to_string(s.size()-2);
+    ans+=*(s.end()-1);
 
     cout<<ans<<endl;
     

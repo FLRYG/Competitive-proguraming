@@ -223,6 +223,9 @@ segment tree 大全 (平方分割も可)
     D - Shortest Path Queries 2         ワーシャルフロイド法
     D - 禁止された数字                   桁dp
     E - 数                              桁dp
+    E - Balanced Path                   dp   i 番目までで j を作れるか(bitset)
+    F - Max Sum Counting                dp   i 番目までで j をいくつ作れるか
+
 
 
 <<再1>>

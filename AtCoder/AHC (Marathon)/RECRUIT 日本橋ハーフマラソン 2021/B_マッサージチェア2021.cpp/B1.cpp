@@ -79,11 +79,11 @@ struct Timer {
     inline double getTime() { return (nowTime() - starttime) / 1e9; }
 };
 
-#define LOCALTEST 0
+#define LOCALTEST 1
 const double NAPIER = 2.718281828459045;
 const double TIME_LIMIT = 1.98;
-const double TEMPERATURE0 = 50.0;
-const double TEMPERATURE1 = 20.0;
+const double TEMPERATURE0 = 1000.0;
+const double TEMPERATURE1 = 10.0;
 Random_double RAND_DOUBLE(0, 1);
 Timer TIMER;
 
@@ -179,7 +179,7 @@ int main() {
 
             if (adopt(tmp_score - score)) {
     #if LOCALTEST
-                printf("%d -> %d\n", score, tmp_score);
+                // printf("%d -> %d\n", score, tmp_score);
     #endif
                 score = tmp_score;
                 quPow = tmp_quPow;
