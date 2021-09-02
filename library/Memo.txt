@@ -86,6 +86,8 @@
     E - Travel by Car                   ワーシャルフロイド
     E - Hopscotch Addict                グラフの状態数を3倍にする       
     E - Rem of Sum is Num               式変形 累積和  
+    E - Multiplication 4                貪欲 場合分け
+    D - 食塩水                          平均最大化 典型
 
 
 <<ARC>>
@@ -225,6 +227,9 @@ segment tree 大全 (平方分割も可)
     E - 数                              桁dp
     E - Balanced Path                   dp   i 番目までで j を作れるか(bitset)
     F - Max Sum Counting                dp   i 番目までで j をいくつ作れるか
+    D - 食塩水                          平均最大化
+    M - おまかせ                        平均最大化
+
 
 
 

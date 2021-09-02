@@ -55,7 +55,7 @@ int main() {
     if (K > pos + neg) {
         // cout<<"aaa"<<endl;
         ans = 0;
-    } else if (K%2==1 && neg==N) {
+    } else if (K % 2 == 1 && neg == N) {
         // cout<<"ccc"<<endl;
         rep(i, N) {
             if (A[i] < 0) A[i] *= -1;
@@ -70,11 +70,12 @@ int main() {
             if (A[l] * A[l + 1] >= A[r - 1] * A[r]) {
                 ans = ans * A[l] % MOD * A[l + 1] % MOD;
                 l += 2;
+                K -= 2;
             } else {
-                ans = ans * A[r - 1] % MOD * A[r] % MOD;
-                r -= 2;
+                ans = ans * A[r] % MOD;
+                r -= 1;
+                K -= 1;
             }
-            K -= 2;
         }
         if (K == 1) ans = ans * A[r] % MOD;
         if (ans < 0) ans += MOD;
@@ -84,7 +85,6 @@ int main() {
 
     return 0;
 }
-
 
 // #include <stdio.h>
 
