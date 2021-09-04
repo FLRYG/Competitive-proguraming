@@ -143,6 +143,8 @@
     N - 整地                            座標圧縮　***
     B - ゲーム                          dp 差をもつ (dp[A][B]+Σa+Σb)/2
     E - 潜入                            グラフの状態数を増やす
+    K - 括弧                            dp カッコの問題
+    N - ビルの建設                      速 実装 segmentTree Range Add Query
 
 
 Overflow
