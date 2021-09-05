@@ -38,61 +38,64 @@ ll fac[MAX], finv[MAX], inv[MAX];
 
 // テーブルを作る前処理
 void COMinit() {
-    fac[0]=fac[1]=1;
-    finv[0]=finv[1]=1;
-    inv[1]=1;
-    for (int i=2; i < MAX; i++){
-        fac[i]=fac[i - 1] * i % MOD;
-        inv[i]=MOD - inv[MOD%i] * (MOD / i) % MOD;
-        finv[i]=finv[i - 1] * inv[i] % MOD;
+    fac[0] = fac[1] = 1;
+    finv[0] = finv[1] = 1;
+    inv[1] = 1;
+    for (int i = 2; i < MAX; i++) {
+        fac[i] = fac[i - 1] * i % MOD;
+        inv[i] = MOD - inv[MOD % i] * (MOD / i) % MOD;
+        finv[i] = finv[i - 1] * inv[i] % MOD;
     }
 }
 
 // 二項係数計算
-ll COM(int n, int k){
+ll COM(int n, int k) {
     if (n < k) return 0;
     if (n < 0 || k < 0) return 0;
     return fac[n] * (finv[k] * finv[n - k] % MOD) % MOD;
 }
 
-int N,M;
+int N, M;
 int G[400][400];
 
 int main() {
     COMinit();
-    cin>>N>>M;
-    rep(i,M){
-        int a,b;
-        cin>>a>>b;
+    cin >> N >> M;
+    rep(i, M) {
+        int a, b;
+        cin >> a >> b;
         a--, b--;
-        G[a][b]=1;
-        G[b][a]=1;
+        G[a][b] = 1;
+        G[b][a] = 1;
     }
 
-    vector<vector<ll>> dp(2*N,vector<ll>(2*N));
-    rep(i,2*N-1) dp[i][i+1]=G[i][i+1];
-    for(int k=2;k<=2*N;k+=2){
-        for(int l=0;l+k-1<2*N;l+=2){
-            int r=l+k-1;
-            if(G[l][r] && k>2) dp[l][r]+=dp[l+1][r-1];
-            for(int i=l+1;i+1<r;i++){
-                dp[l][r]+=dp[l][i]*dp[i+1][r]%MOD*2;
-                dp[l][r]+=COM(dp[l][i]+dp[i+1][r])
-                dp[l][r]%=MOD;
+    vector<vector<ll>> dp(2 * N, vector<ll>(2 * N));
+    rep(i, 2 * N - 1) dp[i][i + 1] = G[i][i + 1];
+    for (int k = 2; k <= 2 * N; k += 2) {
+        for (int l = 0; l + k - 1 < 2 * N; l += 2) {
+            int r = l + k - 1;
+            if (G[l][r] && k > 2) dp[l][r] += dp[l + 1][r - 1];
+            for (int i = l + 1; i + 1 < r; i++) {
+                dp[l][r] += dp[l][i] * dp[i + 1][r] % MOD * 2;
+                dp[l][r] += COM(dp[l][i] + dp[i + 1][r]) dp[l][r] %= MOD;
             }
             // cout<<l<<' '<<r<<' '<<dp[l][r]<<endl;
         }
     }
 
-    for(int k=2;)
+    for (int r = 1; r <= 2 * N; r++) {
+        for (int l = !(r&1); l < r; l += 2) {
+            for(int k =)
+        }
+    }
 
-    cout<<dp[0][2*N-1]<<endl;
-    
+    cout << dp[0][2 * N - 1] << endl;
+
     return 0;
 }
 
 // #include <stdio.h>
-// 
+//
 // #include <algorithm>
 // #include <bitset>
 // #include <chrono>
@@ -159,6 +162,6 @@ int main() {
 
 //     ll ans=f(0,2*N-1);
 //     cout<<ans<<endl;
-    
+
 //     return 0;
 // }
