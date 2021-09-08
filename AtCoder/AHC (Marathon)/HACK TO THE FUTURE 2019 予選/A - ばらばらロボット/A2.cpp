@@ -80,9 +80,9 @@ struct Timer {
 };
 
 const double NAPIER = 2.718281828459045;
-const double TIME_LIMIT = 2.90;
-const double TEMPERATURE0 = 500;
-const double TEMPERATURE1 = 10;
+const double TIME_LIMIT = 2.9;
+const double TEMPERATURE0 = 100;
+const double TEMPERATURE1 = 5;
 Random_double RAND_DOUBLE(0, 1);
 Timer TIMER;
 
@@ -194,7 +194,7 @@ int main() {
         if (EFF[eff] == ori_eff) continue;
         G[i][j] = EFF[eff];
 
-        vector<vector<int>> tmp_goalG(M,vector<int>(M,0));
+        vector<vector<int>> tmp_goalG(M, vector<int>(M, 0));
         rep(k, N) {
             int x = 14, y = 14;
             simulate(x, y, k, G);
@@ -212,8 +212,14 @@ int main() {
         }
 
         if (adopt(tmp_score - score)) {
-            score=tmp_score;
+#if LOCALTEST
+            printf("%d -> %d : %+d o\n", score, tmp_score, tmp_score - score);
+#endif
+            score = tmp_score;
         } else {
+#if LOCALTEST
+            printf("%d -> %d : %+d x\n", score, tmp_score, tmp_score - score);
+#endif
             G[i][j] = ori_eff;
         }
     }
@@ -222,14 +228,14 @@ int main() {
 #if LOCALTEST
     cout << "loopCount: " << loopCount << endl;
     cout << "score: " << score << endl;
-    rep(i,M){
-        rep(j,M) cout<<goalG[i][j]<<' ';
-        cout<<endl;
+    rep(i, M) {
+        rep(j, M) cout << goalG[i][j] << ' ';
+        cout << endl;
     }
     rep(k, N) {
         int x = 14, y = 14;
         simulate(x, y, k, G);
-        cout<<k<<' '<<x<<' '<<y<<endl;
+        cout << k << ' ' << x << ' ' << y << endl;
     }
 #endif
 

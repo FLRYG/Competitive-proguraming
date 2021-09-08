@@ -191,7 +191,7 @@ int main() {
     }
 
     Random_int raPos(1, M - 2);
-    Random_int raEff(0, 4);
+    Random_int raEff(0, 5);
     string EFF = ".DTLR#";
     while (TIMER.getTime() < TIME_LIMIT) {
         updateTemp(TIMER.getTime());
