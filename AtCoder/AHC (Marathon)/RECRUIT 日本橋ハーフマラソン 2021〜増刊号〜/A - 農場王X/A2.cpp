@@ -25,9 +25,9 @@
 using namespace std;
 typedef long long ll;
 typedef long double ld;
-// typedef pair<int, int> P;
-// typedef pair<int,P> IP;
-// typedef pair<P,P> PP;
+typedef pair<int, int> P;
+typedef pair<int, P> IP;
+typedef pair<P, P> PP;
 double const PI = 3.141592653589793;
 int const INF = 1001001001;
 ll const LINF = 1001001001001001001;
@@ -74,10 +74,11 @@ struct Game {
     int money;
 
     int max_num_machine;
+    vector<vector<queue<Vegetable>>> next_vege;
+    vector<vector<int>> evaluation;
     int core_r;
     int core_c;
-    vector<vector<queue<Vegetable>>> next_vege;
-    vector<vector<double>> evaluation;
+    vector<P> route;
 
     Game() : Game(10) {}
 
@@ -94,6 +95,7 @@ struct Game {
                 next_vege[vege.r][vege.c].push(vege);
             }
         }
+        evaluation.assign(N, vector<int>(N, 0.0));
     }
 
     void purchase(int r, int c) {
@@ -129,12 +131,15 @@ struct Game {
                 if (has_machine[i][j] && vege_values[i][j] > 0) {
                     money += vege_values[i][j] * count_connected_machines(i, j);
                     vege_values[i][j] = 0;
+                    next_vege[i][j].pop();
                 }
             }
         }
         // disappear
         for (const Vegetable& vege : veges_end[day]) {
             vege_values[vege.r][vege.c] = 0;
+            if (day == next_vege[vege.r][vege.c].front().e)
+                next_vege[vege.r][vege.c].pop();
         }
     }
 
@@ -162,41 +167,193 @@ struct Game {
 
     Action select_next_action(int day) {
         if (day == 0) {
-            int max_sum = 0;
-            int max_r = -1;
-            int max_c = -1;
-            int dist = INF;
-            for (int r = 0; r < N; r++) {
-                for (int c = 0; c < N; c++) {
-                    if(!next_vege[r][c].empty()){
-                        Vegetable& vege=next_vege[r][c].front();
-                        if (max_sum < sum_future_veges[r][c]) {
-                            max_sum = sum_future_veges[r][c];
-                            max_r = r;
-                            max_c = c;
-                        }
-                    }
-                    
+            int r = 7, c = 7, v = 0;
+            for (Vegetable& vege : veges_start[day]) {
+                if (v < vege.v) {
+                    r = vege.r;
+                    c = vege.c;
+                    v = vege.v;
                 }
             }
+            core_r = r;
+            core_c = c;
+            return Action::purchase(r, c);
+        }
+
+        if (num_machine == 1) {
+            if (money < next_price) {
+                // move
+                int tmp_r = core_r;
+                int tmp_c = core_c;
+                int max_v = -1;
+                core_r = -1;
+                core_c = -1;
+                rep(i, N) rep(j, N) {
+                    if (next_vege[i][j].empty()) continue;
+                    Vegetable& vege = next_vege[i][j].front();
+                    if (vege.s <= day && day <= vege.e && max_v < vege.v) {
+                        max_v = vege.v;
+                        core_r = i;
+                        core_c = j;
+                    }
+                }
+                assert(max_v != -1);
+                assert(core_r != -1);
+                assert(core_c != -1);
+                if (tmp_r == core_r && tmp_c == core_c) return Action::pass();
+                return Action::move(tmp_r, tmp_c, core_r, core_c);
+            } else {
+                // purchase
+                // if(tmp_r==core_r && tmp_c==core_c){
+                //     if(core_c+1<N) return Action::purchase(core_r,core_c+1);
+                //     else return Action::purchase(core_r,core_c-1);
+                // }else{
+                //     rep(dir,4){
+                //         if(tmp_r+DR[dir]==core_r && tmp_c+DC[dir]==core_c){
+                //             return Action::purchase(core_r,core_c);
+                //         }
+                //     }
+                //     route.push_back({core_r,core_c});
+                //     if(core_c+1<N) return Action::purchase(core_r,core_c+1);
+                //     else return Action::purchase(core_r,core_c-1);
+                // }
+                if (core_c + 1 < N)
+                    return Action::purchase(core_r, core_c + 1);
+                else
+                    return Action::purchase(core_r, core_c - 1);
+            }
+            return Action::pass();
+        }
+
+        // if(num_machine==2){
+        //     if(money<next_price){
+        //         // move
+        //         if(route.size()>0){
+        //             P p=*(route.end()-1);
+        //             route.pop_back();
+        //             rep(i,N) rep(j,N){
+        //                 if(abs(p.first-i)+abs(p.second-j)>1 &&
+        //                 has_machine[i][j]){
+        //                     return Action::move(i,j,p.first,p.second);
+        //                 }
+        //             }
+        //         }else{
+        //             int tmp_r=core_r;
+        //             int tmp_c=core_c;
+        //             int max_v=-1;
+        //             core_r=-1;
+        //             core_c=-1;
+        //             rep(i,N) rep(j,N){
+        //                 if(max_v<vege_values[i][j]){
+        //                     max_v=vege_values[i][j];
+        //                     core_r=i;
+        //                     core_c=j;
+        //                 }
+        //             }
+        //         }
+        //     }else{
+
+        //     }
+        //     return Action::pass();
+        // }
+
+        if (route.size() == 0) {
+            // cout<<"  ";
+            // rep(i,N) cout<<i%10<<' ';
+            // cout<<endl;
+            // rep(i,N){
+            //     cout<<i%10<<' ';
+            //     rep(j,N) cout<<has_machine[i][j]<<' ';
+            //     cout<<endl;
+            // }
+
+            // cout<<"core: "<<core_r<<' '<<core_c<<endl;
+            vector<vector<int>> dist(N, vector<int>(N, INF));
+            priority_queue<IP,vector<IP>,greater<IP>> que;
+            que.push({0, {core_r, core_c}});
+            while (!que.empty()) {
+                IP ip = que.top();
+                que.pop();
+                int d = ip.first;
+                int cr = ip.second.first;
+                int cc = ip.second.second;
+                if (dist[cr][cc] <= d) continue;
+                dist[cr][cc] = d;
+                for (int dir = 0; dir < 4; dir++) {
+                    int nr = cr + DR[dir];
+                    int nc = cc + DC[dir];
+                    if (0 <= nr && nr < N && 0 <= nc && nc < N) {
+                        if (has_machine[nr][nc])
+                            que.push({d, {nr, nc}});
+                        else
+                            que.push({d + 1, {nr, nc}});
+                    }
+                }
+            }
+            // cout<<"dist: OK"<<endl;
+
+            int max_v = -1;
+            core_r = -1;
+            core_c = -1;
+            rep(i, N) rep(j, N) {
+                if (has_machine[i][j]) {
+                    evaluation[i][j] = vege_values[i][j];
+                } else if (!next_vege[i][j].empty()) {
+                    Vegetable& vege = next_vege[i][j].front();
+                    if (dist[i][j] <= vege.e - day) {
+                        evaluation[i][j] = vege.v;
+                    }
+                }
+                if (evaluation[i][j] > max_v) {
+                    max_v = evaluation[i][j];
+                    core_r = i;
+                    core_c = j;
+                }
+            }
+            assert(core_r != -1);
+            assert(core_c != -1);
+            // cout<<"core: "<<core_r<<' '<<core_c<<endl;
+            // cout<<"has?: "<<has_machine[core_r][core_c]<<endl;
+
+            int tmp_r = core_r;
+            int tmp_c = core_c;
+            int len = dist[core_r][core_c];
+            rep(i, len) {
+                // cout << tmp_r << ' ' << tmp_c << endl;
+                route.push_back({tmp_r, tmp_c});
+                int tmp_v = -1, d = -1;
+                rep(dir, 4) {
+                    int nr = tmp_r + DR[dir];
+                    int nc = tmp_c + DC[dir];
+                    if (0 <= nr && nr < N && 0 <= nc && nc < N &&
+                        dist[nr][nc] + 1 == dist[tmp_r][tmp_c] &&
+                        tmp_v < evaluation[nr][nc]) {
+                        d = dir;
+                        tmp_v = evaluation[nr][nc];
+                    }
+                }
+                assert(d != -1);
+                tmp_r += DR[d];
+                tmp_c += DC[d];
+            }
+        }
+
+        if (route.size() == 0) {
+            return Action::pass();
         }
 
         if (num_machine >= max_num_machine || money < next_price) {
             // マシンを移動
-            vector<vector<int>> sum_future_veges(N, vector<int>(N, 0));
-            int max_day = min(T, day + num_machine);
-            for (int i = day; i < max_day; i++) {
-                for (const Vegetable& vege : veges_start[i]) {
-                    sum_future_veges[vege.r][vege.c] += vege.v;
-                }
-            }
-            int min_sum = INF;
+            double min_v = INF;
             int min_r = -1;
             int min_c = -1;
             int cnt = -1;
+            P p = *(route.end() - 1);
+            route.pop_back();
             for (int r = 0; r < N; r++) {
                 for (int c = 0; c < N; c++) {
-                    if (has_machine[r][c]) {
+                    if (abs(p.first - r) + abs(p.second - c) > 1 &&
+                        has_machine[r][c]) {
                         if (cnt == -1) cnt = count_connected_machines(r, c);
                         int fl = 1;
                         has_machine[r][c] = 0;
@@ -211,104 +368,24 @@ struct Game {
                             }
                         }
                         has_machine[r][c] = 1;
-                        if (fl && sum_future_veges[r][c] < min_sum) {
-                            min_sum = sum_future_veges[r][c];
+                        if (fl && evaluation[r][c] < min_v) {
+                            min_v = evaluation[r][c];
                             min_r = r;
                             min_c = c;
                         }
                     }
                 }
             }
-            has_machine[min_r][min_c] = 0;
-            int max_sum = 0;
-            int max_r = -1;
-            int max_c = -1;
-            if (num_machine > 1) {
-                for (int r = 0; r < N; r++) {
-                    for (int c = 0; c < N; c++) {
-                        if (!has_machine[r][c]) {
-                            bool fl = false;
-                            if (num_machine == 0) fl = true;
-                            for (int dir = 0; dir < 4; dir++) {
-                                int nr = r + DR[dir];
-                                int nc = c + DC[dir];
-                                if (0 <= nr && nr < N && 0 <= nc && nc < N &&
-                                    has_machine[nr][nc]) {
-                                    fl = true;
-                                    break;
-                                }
-                            }
-                            if (fl && max_sum < sum_future_veges[r][c]) {
-                                max_sum = sum_future_veges[r][c];
-                                max_r = r;
-                                max_c = c;
-                            }
-                        }
-                    }
-                }
-            } else {
-                for (int r = 0; r < N; r++) {
-                    for (int c = 0; c < N; c++) {
-                        if (max_sum < sum_future_veges[r][c]) {
-                            max_sum = sum_future_veges[r][c];
-                            max_r = r;
-                            max_c = c;
-                        }
-                    }
-                }
-            }
-            has_machine[min_r][min_c] = 1;
-            if (max_sum > min_sum) {
-                return Action::move(min_r, min_c, max_r, max_c);
-            } else {
-                has_machine[min_r][min_c] = 1;
-                return Action::pass();
-            }
-            return Action::pass();
+            assert(min_v != INF);
+            assert(min_r != -1);
+            assert(min_c != -1);
+            return Action::move(min_r, min_c, p.first, p.second);
         } else {
             // マシンを購入・設置
-            vector<vector<int>> sum_future_veges(N, vector<int>(N, 0));
-            int max_day = min(T, day + num_machine + 1);
-            for (int i = day; i < max_day; i++) {
-                for (const Vegetable& vege : veges_start[i]) {
-                    sum_future_veges[vege.r][vege.c] += vege.v;
-                }
-            }
-            int max_sum = 0;
-            int max_r = -1;
-            int max_c = -1;
-            for (int r = 0; r < N; r++) {
-                for (int c = 0; c < N; c++) {
-                    if (has_machine[r][c]) {
-                        continue;
-                    }
-                    bool fl = false;
-                    if (num_machine == 0) fl = true;
-                    for (int dir = 0; dir < 4; dir++) {
-                        int nr = r + DR[dir];
-                        int nc = c + DC[dir];
-                        if (0 <= nr && nr < N && 0 <= nc && nc < N &&
-                            has_machine[nr][nc]) {
-                            fl = true;
-                        }
-                    }
-                    if (fl && max_sum < sum_future_veges[r][c]) {
-                        max_sum = sum_future_veges[r][c];
-                        max_r = r;
-                        max_c = c;
-                    }
-                }
-            }
-            if (max_sum > 0) {
-                return Action::purchase(max_r, max_c);
-            } else {
-                return Action::pass();
-            }
+            P p = *(route.end() - 1);
+            route.pop_back();
+            return Action::purchase(p.first, p.second);
         }
-    }
-
-    void update_evaluation(int day) {
-        
     }
 };
 
@@ -327,13 +404,16 @@ int main() {
     int score = 0;
     vector<Action> ans;
     Game best_game;
-    for (int max_num_machine = 20; max_num_machine <= 60; max_num_machine++) {
+    for (int max_num_machine = 30; max_num_machine <= 60; max_num_machine++) {
         Game game(max_num_machine);
         vector<Action> actions;
         for (int day = 0; day < T; day++) {
+            // cout << "day" << day << endl;
             Action action = game.select_next_action(day);
+            // cout << "action" << endl;
             actions.push_back(action);
             game.simulate(day, action);
+            // cout << "simulate" << endl;
         }
         if (game.money > score) {
             score = game.money;

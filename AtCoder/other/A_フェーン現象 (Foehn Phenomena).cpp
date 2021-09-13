@@ -83,44 +83,48 @@ int main() {
     rep(i,N){
         if(A[i]<A[i+1]) temp+=-S*(A[i+1]-A[i]);
         else temp+=T*(A[i]-A[i+1]);
-        cout<<temp<<endl;
     }
 
     segmentTree<ll,op,e> sg(N+2);
+    rep(i,N+1){
+        sg.set(i,A[i]);
+    }
+
     vector<ll> ans;
     while (Q--) {
+        rep(i,N+1) cout<<sg.query(0,i+1)<<' '; cout<<endl;
         int L, R, X;
         cin>>L>>R>>X;
         ll x, y;
         if(L>0){
-            x=sg.query(0,L)+A[L-1];
-            y=sg.query(0,L+1)+A[L];
-            if(x<y) temp-=-S*(y-x);
-            else temp-=T*(y-x);
+            x=sg.query(0,L);
+            y=sg.query(0,L+1);
+            if(x<y) temp-=-S*abs(x-y);
+            else temp-=T*abs(x-y);
         }
         if(R<N){
-            x=sg.query(0,R+1)+A[R];
-            y=sg.query(0,R+2)+A[R+1];
-            if(x<y) temp-=-S*(y-x);
-            else temp-=T*(y-x);
+            x=sg.query(0,R+1);
+            y=sg.query(0,R+2);
+            if(x<y) temp-=-S*abs(x-y);
+            else temp-=T*abs(x-y);
         }
         sg.set(L,sg.get(L)+X);
         sg.set(R+1,sg.get(R+1)-X);
         if(L>0){
-            x=sg.query(0,L)+A[L-1];
-            y=sg.query(0,L+1)+A[L];
-            if(x<y) temp+=-S*(y-x);
-            else temp+=T*(y-x);
+            x=sg.query(0,L);
+            y=sg.query(0,L+1);
+            if(x<y) temp+=-S*abs(x-y);
+            else temp+=T*abs(x-y);
         }
         if(R<N){
-            x=sg.query(0,R+1)+A[R];
-            y=sg.query(0,R+2)+A[R+1];
-            if(x<y) temp+=-S*(y-x);
-            else temp+=T*(y-x);
+            x=sg.query(0,R+1);
+            y=sg.query(0,R+2);
+            if(x<y) temp+=-S*abs(x-y);
+            else temp+=T*abs(x-y);
         }
-        rep(i,N+1) cout<<sg.query(0,i+1)+A[i]<<' '; cout<<endl;
         ans.push_back(temp);
     }
+        rep(i,N+1) cout<<sg.query(0,i+1)<<' '; cout<<endl;
 
     repr(e,ans) cout<<e<<endl;
 

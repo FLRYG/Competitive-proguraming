@@ -1,6 +1,6 @@
 #!/bin/sh
 
-declare source_file='../A1.cpp'
+declare source_file='../A3.cpp'
 declare in_a='in/input'
 declare in_b='.txt'
 declare output='../out.txt'
@@ -11,7 +11,7 @@ declare -i score=0
 cd tester/
 
 g++ -O2 $source_file
-g++ -o t.out tester50.cpp 
+g++ -o t.out -O2 tester50.cpp 
 
 : > $result
 : > $scr

@@ -74,10 +74,11 @@ struct Game {
     int money;
 
     int max_num_machine;
-    vector<vector<queue<Vegetable>>> next_vege;
-    vector<vector<double>> evaluation;
 
-    Game() : Game(10) {}
+    Game() : num_machine(0), next_price(1), money(1) {
+        has_machine.assign(N, vector<int>(N, 0));
+        vege_values.assign(N, vector<int>(N, 0));
+    }
 
     Game(int _max_num_machine)
         : num_machine(0),
@@ -86,22 +87,6 @@ struct Game {
           max_num_machine(_max_num_machine) {
         has_machine.assign(N, vector<int>(N, 0));
         vege_values.assign(N, vector<int>(N, 0));
-        next_vege.assign(N, vector<queue<Vegetable>>(N));
-        for (int day = 0; day < T; day++) {
-            for (const Vegetable& vege : veges_start[day]) {
-                next_vege[vege.r][vege.c].push(vege);
-            }
-        }
-        evaluation.assign(N, vector<double>(N, 0.0));
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                for (int r = 0; r < N; r++){
-                    for (int c = 0; c < N; c++){
-                        evaluation[r][c] += evaluation_func(next_vege[i][j].front(),r,c);
-                    }
-                }
-            }
-        }
     }
 
     void purchase(int r, int c) {
@@ -137,33 +122,12 @@ struct Game {
                 if (has_machine[i][j] && vege_values[i][j] > 0) {
                     money += vege_values[i][j] * count_connected_machines(i, j);
                     vege_values[i][j] = 0;
-                    for (int r = 0; r < N; r++){
-                        for (int c = 0; c < N; c++){
-                            evaluation[r][c] -= evaluation_func(next_vege[i][j].front(),r,c);
-                        }
-                    }
-                    next_vege[i][j].pop();
-                    if(!next_vege[i][j].empty()){
-                        for (int r = 0; r < N; r++){
-                            for (int c = 0; c < N; c++){
-                                evaluation[r][c] += evaluation_func(next_vege[i][j].front(),r,c);
-                            }
-                        }
-                    }
                 }
             }
         }
         // disappear
         for (const Vegetable& vege : veges_end[day]) {
             vege_values[vege.r][vege.c] = 0;
-            if (day == next_vege[vege.r][vege.c].front().e) {
-                for (int r = 0; r < N; r++){
-                    for (int c = 0; c < N; c++){
-                        evaluation[r][c] -= evaluation_func(vege,r,c);
-                    }
-                }
-                next_vege[vege.r][vege.c].pop();
-            }
         }
     }
 
@@ -192,47 +156,49 @@ struct Game {
     Action select_next_action(int day, int span = 10) {
         if (num_machine >= max_num_machine || money < next_price) {
             // マシンを移動
-            // vector<vector<int>> sum_future_veges(N, vector<int>(N, 0));
-            // int max_day = min(T, day + num_machine);
-            // for (int i = day; i < max_day; i++) {
-            //     for (const Vegetable& vege : veges_start[i]) {
-            //         sum_future_veges[vege.r][vege.c] += vege.v;
-            //     }
-            // }
-            double min_sum = INF;
+            vector<vector<int>> sum_future_veges(N, vector<int>(N, 0));
+            rep(i,N) rep(j,N){
+                sum_future_veges[i][j]+=100*vege_values[i][j];
+            }
+            int max_day = min(T, day + num_machine);
+            for (int i = day; i < max_day; i++) {
+                for (const Vegetable& vege : veges_start[i]) {
+                    sum_future_veges[vege.r][vege.c] += vege.v*100/(i-day+1);
+                }
+            }
+            int min_sum = INF;
             int min_r = -1;
             int min_c = -1;
             int cnt = -1;
             for (int r = 0; r < N; r++) {
                 for (int c = 0; c < N; c++) {
                     if (has_machine[r][c]) {
-                        if (cnt == -1) cnt = count_connected_machines(r, c);
-                        int fl = 1;
-                        has_machine[r][c] = 0;
+                        if(cnt==-1) cnt=count_connected_machines(r,c);
+                        int fl=1;
+                        has_machine[r][c]=0;
                         for (int dir = 0; dir < 4; dir++) {
                             int nr = r + DR[dir];
                             int nc = c + DC[dir];
                             if (0 <= nr && nr < N && 0 <= nc && nc < N &&
                                 has_machine[nr][nc]) {
-                                if (count_connected_machines(nr, nc) < cnt - 1)
-                                    fl = 0;
+                                if(count_connected_machines(nr,nc)<cnt-1) fl=0;
                                 break;
                             }
                         }
-                        has_machine[r][c] = 1;
-                        if (fl && evaluation[r][c] < min_sum) {
-                            min_sum = evaluation[r][c];
+                        has_machine[r][c]=1;
+                        if (fl && sum_future_veges[r][c] < min_sum) {
+                            min_sum = sum_future_veges[r][c];
                             min_r = r;
                             min_c = c;
                         }
                     }
                 }
             }
-            has_machine[min_r][min_c] = 0;
-            double max_sum = 0;
+            has_machine[min_r][min_c]=0;
+            int max_sum = 0;
             int max_r = -1;
             int max_c = -1;
-            if (num_machine > 1) {
+            if(num_machine>1){
                 for (int r = 0; r < N; r++) {
                     for (int c = 0; c < N; c++) {
                         if (!has_machine[r][c]) {
@@ -247,43 +213,43 @@ struct Game {
                                     break;
                                 }
                             }
-                            if (fl && max_sum < evaluation[r][c]) {
-                                max_sum = evaluation[r][c];
+                            if (fl && max_sum < sum_future_veges[r][c]) {
+                                max_sum = sum_future_veges[r][c];
                                 max_r = r;
                                 max_c = c;
                             }
                         }
                     }
                 }
-            } else {
+            }else{
                 for (int r = 0; r < N; r++) {
                     for (int c = 0; c < N; c++) {
-                        if (max_sum < evaluation[r][c]) {
-                            max_sum = evaluation[r][c];
+                        if (max_sum < sum_future_veges[r][c]) {
+                            max_sum = sum_future_veges[r][c];
                             max_r = r;
                             max_c = c;
                         }
                     }
                 }
             }
-            has_machine[min_r][min_c] = 1;
+            has_machine[min_r][min_c]=1;
             if (max_sum > min_sum) {
                 return Action::move(min_r, min_c, max_r, max_c);
             } else {
-                has_machine[min_r][min_c] = 1;
+                has_machine[min_r][min_c]=1;
                 return Action::pass();
             }
             return Action::pass();
         } else {
             // マシンを購入・設置
-            // vector<vector<int>> sum_future_veges(N, vector<int>(N, 0));
-            // int max_day = min(T, day + num_machine + 1);
-            // for (int i = day; i < max_day; i++) {
-            //     for (const Vegetable& vege : veges_start[i]) {
-            //         sum_future_veges[vege.r][vege.c] += vege.v;
-            //     }
-            // }
-            double max_sum = 0;
+            vector<vector<int>> sum_future_veges(N, vector<int>(N, 0));
+            int max_day = min(T, day + num_machine + 1);
+            for (int i = day; i < max_day; i++) {
+                for (const Vegetable& vege : veges_start[i]) {
+                    sum_future_veges[vege.r][vege.c] += vege.v;
+                }
+            }
+            int max_sum = 0;
             int max_r = -1;
             int max_c = -1;
             for (int r = 0; r < N; r++) {
@@ -301,8 +267,8 @@ struct Game {
                             fl = true;
                         }
                     }
-                    if (fl && max_sum < evaluation[r][c]) {
-                        max_sum = evaluation[r][c];
+                    if (fl && max_sum < sum_future_veges[r][c]) {
+                        max_sum = sum_future_veges[r][c];
                         max_r = r;
                         max_c = c;
                     }
@@ -314,11 +280,6 @@ struct Game {
                 return Action::pass();
             }
         }
-    }
-
-    double evaluation_func(Vegetable vege, int r, int c) {
-        int d=abs(vege.r-r)+abs(vege.c-c);
-        return (double)vege.v*(vege.e-vege.s+1-d)/(vege.e-vege.s+1)/(d+1);
     }
 };
 
@@ -337,7 +298,7 @@ int main() {
     int score = 0;
     vector<Action> ans;
     Game best_game;
-    for (int max_num_machine = 30; max_num_machine <= 60; max_num_machine++) {
+    for (int max_num_machine = 20; max_num_machine <= 60; max_num_machine++) {
         Game game(max_num_machine);
         vector<Action> actions;
         for (int day = 0; day < T; day++) {
